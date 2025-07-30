@@ -223,6 +223,7 @@
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
         // --- Firebase Configuration ---
+        // These variables are provided by the environment.
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "YOUR_API_KEY", authDomain: "...", projectId: "..." };
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-shop-form';
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
@@ -347,7 +348,7 @@
             e.preventDefault();
 
             if (!db) {
-                 displayMessage("Database is not connected. Cannot submit.", "error");
+                 displayMessage("Database is not connected. Please ensure the Firebase config is correct in the HTML file.", "error");
                  return;
             }
 
@@ -398,6 +399,8 @@
                 mandrelSize: formData.get('mandrel-size'),
                 calDieSize: formData.get('cal-die-size'),
             };
+            
+            const collectionPath = `artifacts/${appId}/public/data/submissions`;
 
             const submissionData = {
                 operatorInitials: formData.get('operator-name'),
@@ -419,7 +422,7 @@
             };
             
             try {
-                const docRef = await addDoc(collection(db, `artifacts/${appId}/public/data/submissions`), submissionData);
+                const docRef = await addDoc(collection(db, collectionPath), submissionData);
                 console.log("Document written with ID: ", docRef.id);
                 
                 displayMessage('Form submitted successfully!', 'success');
